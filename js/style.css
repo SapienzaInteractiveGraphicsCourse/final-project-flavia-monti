@@ -1,0 +1,35 @@
+body, html{
+  height: 100%;
+  margin: 0;
+}
+
+canvas{
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.bg{
+  background-image: url("../textures/sky.jpg");
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.center{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.little{
+  width: 10%;
+}
+
+#hearts{
+  position: absolute;
+  left: 0;
+  top: 0;
+}

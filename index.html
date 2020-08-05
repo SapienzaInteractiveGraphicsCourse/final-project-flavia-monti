@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+		
+		<meta charset=UTF-8 />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Fuel Race</title>
+		<link rel='shortcut icon' type='image/x-icon' href='./images/favicon.ico'/>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link rel="stylesheet" href="./js/style.css">
+
+		<script type="text/javascript" src="./js/three.js"></script>
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+	</head>
+
+	<body> 
+		<div class="bg center p-5">
+			<img src="./images/title.png" height="400">
+			
+			<h4>
+				Please select level and press Play
+			</h4>
+			<div class="p-3">
+				<select class="custom-select mr-sm-2 little" id="speed">
+					<option selected value="easy">EASY</option>
+					<option value="medium">MEDIUM</option>
+					<option value="hard">HARD</option>
+				</select>
+			</div>
+			<div class="p-3">
+				<button type="button" class="btn btn-dark btn-lg" onclick="main()">Play</button>
+			</div>
+			<div class="p-3">
+				<button type="button" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#exampleModal">
+					Instructions
+				</button>
+			</div>
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <h5 class="modal-title" id="exampleModalLabel">Instructions</h5>
+					  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					  </button>
+					</div>
+					<div class="modal-body">
+						<h2>Collect as many fuel as possible avoiding obstacles</h1>
+					  	<div style="float: left;">
+							<img src="images/fuel.png"> 
+							<h5>Fuel</h5>
+						</div>
+					  	<div style="float: right;">
+							<img src="images/obstacle.png"> 
+							<h5>Obstacle</h5>
+						</div>
+					</div>
+					<div>
+						<img src="images/left.png">
+						<img src="images/right.png">
+						<h5>Use left and right arrow to move the transformer</h5>
+					</div>
+				  </div>
+				</div>
+			  </div>
+		</div>
+
+		<script>
+			function main(){
+				var selectElem = document.getElementById("speed");
+				var difficulty = selectElem.options[selectElem.selectedIndex].value;
+				window.location.href='./js/main.html?speed='+difficulty
+			}
+		</script>
+
+	</body>
+</html>
