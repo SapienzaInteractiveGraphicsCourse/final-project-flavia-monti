@@ -7,13 +7,14 @@ var obstacles = [];
 var numHouses = 6;
 var numTrees = 6;
 var numFuels = 0;
-var maxFuels = 4;
+var maxFuels;
 var numObstacles = 0;
-var maxObstacles = 4;
-var maxTime = 3;
+var maxObstacles;
+var maxTime;
 var lifes = 3;
 var score = 0;
 var game_over = false;
+var speedZ;
 
 function initAll(){
 	//renderer
@@ -30,11 +31,11 @@ function initAll(){
 	scene.add(camera);
 
 	//lights
-	//light1 = new THREE.AmbientLight(0x404040, 1.4 , 1);
-	light1 = new THREE.AmbientLight(0xe1e1d1, 1.4 , 1);
+	light1 = new THREE.AmbientLight(0xe1e1d1, 1.4 , 1); //yellow
 	light1.position.set(30, 10, 30);
 	scene.add(light1);
 
+	//clock (to load obstacles and fuels)
 	clock = new THREE.Clock();
 	clock.start();
 }
@@ -45,7 +46,7 @@ function setSky(){
 	var skyMaterial = new THREE.MeshBasicMaterial({map:skyTexture});
 	var skyMesh = new THREE.Mesh(new THREE.PlaneGeometry(2000, 300, 32),skyMaterial);
 	skyMesh.position.set( 0 , 139, -250);
-	scene.fog = new THREE.Fog(Colors.white, 500, 10000);
+	scene.fog = new THREE.Fog(0xffffff, 500, 10000); 	//white
 	scene.add(skyMesh)
 }
 
@@ -99,6 +100,7 @@ function loadGLTF(name, path, modelLoaded){
 	);
 }
 
+//houses cloned
 function housesLoaded(){
 	if(models['house1'] && models['house2'] && models['house3']){
 		for(i=0; i<2; i++){
@@ -106,6 +108,7 @@ function housesLoaded(){
 			houses.push(models['house2'].clone());
 			houses.push(models['house3'].clone());
 		}
+
 		houses[0].position.set(65, 0, -170);
 		houses[1].position.set(75, -1, -100);
 		houses[2].position.set(75, -10, 0);
@@ -124,10 +127,12 @@ function housesLoaded(){
 	}
 }
 
+//trees cloned
 function treeLoaded(){
 	for(i=0; i<numTrees; i++){
 		trees.push(models['tree'].clone());
 	}
+
 	trees[0].position.set(50, -10, -190);
 	trees[1].position.set(50, -10, -120);
 	trees[2].position.set(50, -10, -50);
@@ -135,15 +140,17 @@ function treeLoaded(){
 	trees[3].position.set(-50, -10, -160);
 	trees[4].position.set(-50, -10, -90);
 	trees[5].position.set(-50, -10, -20);
+
 	for(i=0; i<numTrees; i++){ 
-		trees[i].scale.set(2,2,2)
+		trees[i].scale.set(2,2,2);
 		if(i>2){
 			trees[i].rotation.y = Math.PI;
 		}
-		scene.add(trees[i])
+		scene.add(trees[i]);
 	}
 }
 
+//bumblebee
 function transformerLoaded(){
 	models['transformer'].position.set(0, -50, 20);
 	models['transformer'].scale.set(6,6,6);
@@ -155,25 +162,27 @@ function transformerLoaded(){
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event){
 	var keyCode = event.which;
-	if (keyCode == 37){	//sinistra
+	if (keyCode == 37){	//left
 		if(models['transformer'].position.x != -37){
 			models['transformer'].position.x -= 37;
-			console.log('muovo a sx');
+			console.log('moved to left');
 		}
-	} else if (keyCode == 39){ //destra
+	} else if (keyCode == 39){ //right
 		if(models['transformer'].position.x != 37){
 			models['transformer'].position.x += 37;
-			console.log('muovo a dx');
+			console.log('moved to right');
  		}
 	}
 }
 
+//variables for the animation of bumblebee
 var right_arm_up = true;
 var left_arm_up = false;
 var right_leg_up = true;
 var left_leg_up = false;
 var toLeft = true;
 var noTouch = false;
+//animation of bumblebee
 function renderTransformer(){
 	if(!game_over){
 		models['transformer'].traverse(function(child){
@@ -229,7 +238,7 @@ function renderTransformer(){
 				}
 			}
 		})
-	}else{
+	}else{	//if game over, bumblebee moved to the center and rotate
 		models['transformer'].position.x = 0;
 		models['transformer'].position.y = -35;
 		models['transformer'].rotation.y -= 0.1;
@@ -237,30 +246,41 @@ function renderTransformer(){
 	}
 }
 
-function getParameter() {
+//get the variable from index.html url
+function setLevel() {
 	var queryString = window.location.search;
 	var urlParams = new URLSearchParams(queryString);
 	var speed = urlParams.get('speed');
 	console.log(speed);
-	if(speed == 'easy')
+	if(speed == 'easy'){
 		speedZ = 1;
-	else if(speed == 'medium')
+		maxFuels = 4;
+		maxObstacles = 4;
+		maxTime = 3;
+	}else if(speed == 'medium'){
 		speedZ = 1.5;
-	else if(speed == 'hard')
+		maxFuels = 4;
+		maxObstacles = 6;
+		maxTime = 2;
+	}else if(speed == 'hard'){
 		speedZ = 2;
+		maxFuels = 4;
+		maxObstacles = 8;
+		maxTime = 1;
+	}
 }
 
-var speedZ;
+//render houses
 function renderHouses(){
 	for(i=0; i<numHouses; i++){
 		if(houses[i].position.z > 50){
-
 			houses[i].position.z = -210;
 		}
 		houses[i].position.z += speedZ;
 	}
 }
 
+//render trees
 function renderTrees(){
 	for(i=0; i<numTrees; i++){
 		if(trees[i].position.z > 50){
@@ -270,8 +290,9 @@ function renderTrees(){
 	}
 }
 
+//random x position for fuels and obstacles
 function randomPosX(){
-	var randPos = Math.floor(Math.random() * 3);	//random number {0,1,2}: 0=sx, 1=center, 2=dx
+	var randPos = Math.floor(Math.random() * 3);	//random number {0,1,2}: 0=left, 1=center, 2=right
 	var posX = 0;
 	if(randPos == 0){
 		posX = -45;
@@ -283,6 +304,7 @@ function randomPosX(){
 	return posX;
 }
 
+//load either an obstacle or a fuel randomly and position it randomly
 function loadElements(){
 	var rand = Math.floor(Math.random() * 2);	//random number {0,1}: 0=obstacle, 1=fuel 
 	var posX = randomPosX();
@@ -302,11 +324,22 @@ function loadElements(){
 	}
 }
 
+/*
+	move back fuel when it reach end of the scene or hit bumblebee
+	check if fuel and obstacle overlap
+*/
 function moveBackFuel(i){
 	var posX = randomPosX();
 	fuels[i].position.x = posX;
 	for(j=0; j<numFuels; j++){
 		var distance = Math.abs(-650 - fuels[j].position.z)
+		if(distance < 10 && i != j)
+			fuels[i].position.z = -665;
+		else
+			fuels[i].position.z = -650;
+	}
+	for(j=0; j<numObstacles; j++){
+		var distance = Math.abs(-650 - obstacles[j].position.z)
 		if(distance < 10)
 			fuels[i].position.z = -665;
 		else
@@ -314,6 +347,7 @@ function moveBackFuel(i){
 	}
 }
 
+//render fuels
 function renderFuels(){
 	for(i=0; i<numFuels; i++){
 		if(fuels[i].position.z > 20){
@@ -324,11 +358,22 @@ function renderFuels(){
 	}
 }
 
+/*
+	move back obstacle when it reach end of the scene or hit bumblebee
+	check if obstacle and fuel overlap
+*/
 function moveBackObstacle(i){
 	var posX = randomPosX();
 	obstacles[i].position.x = posX;
 	for(j=0; j<numObstacles; j++){
 		var distance = Math.abs(-650 - obstacles[j].position.z)
+		if(distance < 10 && i != j)
+			obstacles[i].position.z = -665;
+		else
+			obstacles[i].position.z = -650;
+	}
+	for(j=0; j<numFuels; j++){
+		var distance = Math.abs(-650 - fuels[j].position.z)
 		if(distance < 10)
 			obstacles[i].position.z = -665;
 		else
@@ -336,6 +381,7 @@ function moveBackObstacle(i){
 	}
 }
 
+//render obstacles
 function renderObstacles(){
 	for(i=0; i<numObstacles; i++){
 		if(obstacles[i].position.z > 20){
@@ -345,6 +391,7 @@ function renderObstacles(){
 	}
 }
 
+//to check if element and bumblebee are on the same x side (for collision)
 function sameSide(pos){
 	if(pos > 0 && models['transformer'].position.x > 0) return true;
 	else if(pos < 0 && models['transformer'].position.x < 0) return true;
@@ -352,6 +399,10 @@ function sameSide(pos){
 	else return false;
 }
 
+/*
+	check if a collision between bumblebee and obstacle or fuel happens
+	in this function is checked if game over happens
+*/
 function checkCollision(){
 	if(lifes > 0){
 		for(i=0; i<numObstacles; i++){
@@ -362,6 +413,10 @@ function checkCollision(){
 				lifes -= 1;
 				var name = "key"+lifes;
 				document.getElementById(name).src = "../images/nokey.png";
+				context.resume().then(() => {
+					audioCrash.play();
+					console.log('crash sound');
+				});
 				if(lifes == 0){
 					console.log('gameover');
 					game_over = true;
@@ -377,11 +432,16 @@ function checkCollision(){
 				score += 1;
 				var elem = document.getElementById('scoreNumbers');
 				elem.innerHTML = score;
+				context.resume().then(() => {
+					audioFuel.play();
+					console.log('fuel sound');
+				});
 			}
 		}
 	}
 }
 
+//game over function
 function gameOver(){
 	var goImg = document.createElement('img');
 	goImg.style.position = 'relative';
@@ -400,6 +460,7 @@ function gameOver(){
 	document.getElementById('gameover').appendChild(back);
 }
 
+//visualization of hearts (keys) on the page
 function showHearts(){
 	var lifeText = document.createElement('img');
 	lifeText.style.position = 'absolute';
@@ -442,6 +503,7 @@ function showHearts(){
 	document.getElementById('hearts').appendChild(key2);
 }
 
+//visualization of score on the page
 function showScore(){
 	var scoreText = document.createElement('img');
 	scoreText.style.position = 'absolute';
@@ -462,6 +524,18 @@ function showScore(){
 	document.getElementById('score').appendChild(scoreNumbers);
 }
 
+function showExitButton(){
+	var exit = document.createElement('button');
+	exit.style.position = "absolute";
+	exit.style.bottom = 10 + 'px';
+	exit.style.left = 10 + 'px';
+	exit.className = "btn btn-dark btn-lg center";
+	exit.innerHTML = "Exit"; 
+	exit.addEventListener('click', function(){window.location.href = "../index.html";});
+
+	document.body.appendChild(exit);
+}
+
 function allReady(){
 	if(models['transformer'] && models['house1'] && models['house2'] && models['house3'] && models['tree'] && models['fuel'] && models['obstacle'])
 		return true;
@@ -470,7 +544,7 @@ function allReady(){
 }
 
 // RENDER THE SCENE
-function render() {
+function render(){
 	renderer.render(scene, camera);
 	if(allReady()){
 		renderTransformer();
@@ -487,15 +561,15 @@ function render() {
 	requestAnimationFrame(render);
 }
 
-
 function main(){
 	initAll();
+	showExitButton();
 	showHearts();
 	showScore();
 	setSky();
 	setGround();
 	loadModels();
-	getParameter();
+	setLevel();
 	render();
 }
 

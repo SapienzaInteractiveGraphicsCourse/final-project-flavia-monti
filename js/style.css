@@ -10,7 +10,7 @@ canvas{
 }
 
 .bg{
-  background-image: url("../textures/sky.jpg");
+  background-image: url("../images/bumblebee.png");
   height: 100%;
   background-position: center;
   background-repeat: no-repeat;
