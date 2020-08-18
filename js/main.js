@@ -162,12 +162,12 @@ function transformerLoaded(){
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event){
 	var keyCode = event.which;
-	if (keyCode == 37){	//left
+	if(keyCode == 37){	//left
 		if(models['transformer'].position.x != -37){
 			models['transformer'].position.x -= 37;
 			console.log('moved to left');
 		}
-	} else if (keyCode == 39){ //right
+	}else if(keyCode == 39){ //right
 		if(models['transformer'].position.x != 37){
 			models['transformer'].position.x += 37;
 			console.log('moved to right');
@@ -413,15 +413,20 @@ function checkCollision(){
 				lifes -= 1;
 				var name = "key"+lifes;
 				document.getElementById(name).src = "../images/nokey.png";
-				context.resume().then(() => {
-					audioCrash.play();
-					console.log('crash sound');
-				});
 				if(lifes == 0){
 					console.log('gameover');
 					game_over = true;
+					context.resume().then(() => {
+						audioGameOver.play();
+						console.log('game over sound');
+					});
 					gameOver();
-				} 
+				}else{
+					context.resume().then(() => {
+						audioCrash.play();
+						console.log('crash sound');
+					});
+				}
 			}
 		}
 		for(i=0; i<numFuels; i++){
