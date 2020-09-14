@@ -9,6 +9,7 @@ var loader = new THREE.GLTFLoader();
 var clock;
 var audioCrash = new Audio("../sounds/crash2.mp3");
 var audioFuel = new Audio("../sounds/fuel2.mp3");
+var audioGameOver = new Audio("../sounds/gameover.mp3");
 var context;
 
 function removeElem(id){
