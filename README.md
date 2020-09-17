@@ -6,7 +6,7 @@ Fuel Race is an endless runner game realized as final project for Interactive Gr
 ## Game link 
 [LINK TO PLAY THE GAME](https://sapienzainteractivegraphicscourse.github.io/final-project-flavia-monti/)
 
-Please run the game on ***Chrome*** so that all works fine, it was seen that if running on Firefox audio does not work and if running on Safari the character blocks.
+Please run the game on ***Chrome*** so that all works fine, it was seen that if running on Firefox audio does not work and if running on Safari Transformer blocks whenever he hits an object.
 
 To execute the game on a pc you need to run a local server (using for example Python).
 
